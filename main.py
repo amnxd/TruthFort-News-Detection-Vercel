@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import requests
@@ -8,12 +7,16 @@ import hashlib
 from datetime import datetime
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from env import NEWS_API_KEY
-import re
 import os
+from dotenv import load_dotenv
+import re
+
+# Load environment variables
+load_dotenv()
+NEWS_API_KEY = os.getenv('NEWS_API_KEY')
 
 # Initialize Flask
-app = Flask(__name__, static_folder='../frontend', template_folder='../frontend')
+app = Flask(__name__, static_folder='frontend', template_folder='frontend')
 CORS(app)
 
 # Ensure NLTK data
@@ -108,11 +111,11 @@ verifier = NewsVerifier()
 # Routes
 @app.route('/')
 def home():
-    return send_from_directory('../frontend', 'home.html')
+    return send_from_directory('frontend', 'home.html')
 
 @app.route('/index.html')
 def index():
-    return send_from_directory('../frontend', 'index.html')
+    return send_from_directory('frontend', 'index.html')
 
 @app.route('/verify', methods=['POST'])
 def verify():
@@ -145,3 +148,6 @@ def health():
     return jsonify({'status': 'ok', 'message': 'Running on Vercel'})
 
 # No app.run() here — Vercel handles that
+
+if __name__ == '__main__':
+    app.run(debug=True)
